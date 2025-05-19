@@ -1,0 +1,28 @@
+import pandas as pd
+
+# Пути к файлам
+webinar_path = r'path_to_webinar_data'
+funnel_path = r'path_to_funnel_data'
+
+# Загрузка с правильным разделителем
+webinar_df = pd.read_csv(webinar_path, sep=';', encoding='utf-8', low_memory=False)
+funnel_df = pd.read_csv(funnel_path, sep=';', encoding='utf-8', low_memory=False)
+
+# Приводим email к нижнему регистру
+webinar_df['Email'] = webinar_df['Email'].str.lower()
+funnel_df['Email'] = funnel_df['Email'].str.lower()
+
+# Оставляем только тех, кто был на вебинаре
+merged_df = pd.merge(
+    funnel_df, 
+    webinar_df[['Email', 'Телефон']], 
+    on='Email', 
+    how='inner'
+)
+
+merged_df = merged_df[['Имя', 'Email', 'Телефон']]
+
+# Сохраняем результат
+merged_df.to_csv(r'youre_path\merged_result.csv', sep=';', index=False, encoding='utf-8-sig')
+
+print("Готово! Файл сохранён как merged_result.csv")
